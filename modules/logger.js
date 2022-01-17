@@ -9,8 +9,18 @@ const colors = {
 };
 
 class Logger {
-	constructor(loc) {
-		this.loc = loc;
+	constructor(loc, fn) {
+		this.loc = loc + fn;
+		if(loc.endsWith('/')) {
+			this.loc = loc + fn;
+		} else {
+			this.loc = loc + '/' + fn;
+		}
+
+		if(!fs.existsSync(loc)) {
+			fs.mkdirSync(loc)
+			this.info(`Created folder ${loc}`)
+		}
 	}
 	#log(msg, color, level) {
 		const d = new Date();

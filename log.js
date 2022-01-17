@@ -5,6 +5,6 @@ function getDate() {
 	return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}-${d.getHours() + 1}-${d.getMinutes()}-${d.getSeconds()}`;
 }
 
-const log = new Logger(`./logs/${getDate()}.log`); // Create logger object
+const log = new Logger('./logs/', `${getDate()}.log`); // Create logger object
 
 module.exports = log;
