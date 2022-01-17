@@ -1,0 +1,9 @@
+.env
+config.js
+
+*.log
+
+node_modules/
+data/
+
+notes.txt

@@ -1,0 +1,28 @@
+{
+  "name": "e621bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blobadoodle/e621bot.git"
+  },
+  "author": "Blobadoodle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Blobadoodle/e621bot/issues"
+  },
+  "homepage": "https://github.com/Blobadoodle/e621bot#readme",
+  "dependencies": {
+    "discord.js": "^13.5.0",
+    "dotenv": "^10.0.0",
+    "enmap": "^5.8.7",
+    "node-fetch": "^2.6.6"
+  }
+}
