@@ -16,12 +16,10 @@ exports.run = async (client, message, args, level) => {
 	const post = await e6.getpost(id);
 
 	const uploader = await e6.getuser(post.data.uploader_id);
-	let avatar = await e6.getpost(uploader.data.avatar_id);
-	try {
-		avatar = avatar.data.file.url || '';
-	} catch {
-		avatar = '';
-	}
+
+	let avatar = '';
+	
+	if(uploader.data.avatar_id != null) avatar = await e6.getpost(user.data.avatar_id);
 
 	if (post.status === 404) return message.channel.send('Nobody here but us chickens!');
 
