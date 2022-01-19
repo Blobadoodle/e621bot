@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const auth = require('./helpers/auth.js');
+const { RateLimiter } = require('limiter');
 
 // All main class functions will return this class
 
@@ -15,6 +16,7 @@ class response {
 
 class e621js {
     #headers;
+    #limiter;
 
     constructor(username, apikey, agent) {
         if (!(apikey && username && agent)) {
@@ -26,10 +28,13 @@ class e621js {
             Authorization: auth(username, apikey)
         };
         this.end = 'https://e621.net/';
+
+        this.#limiter = new RateLimiter({tokensPerInterval: 1, interval: 'second'})
     }
 
     async #get(url) {
-        const resp = await fetch(this.end + url, {method: 'GET', headers: this.#headers});
+        const remainingRequests = await this.#limiter.removeTokens(1);
+        const resp = fetch(this.end + url, {method: 'GET', headers: this.#headers});
         return resp;
     }
 
@@ -41,11 +46,7 @@ class e621js {
     }
 
     async search(tags, limit, page) { // Limit is how many per page and page is page
-        let url = `posts.json?limit=${limit}&page=${page}&tags=`;
-        for (let tag of tags) { // Add all the tags together seperated by "+"
-            url += `${tag}+`;
-        }
-        url = url.slice(0, -1) // Remove the last "+"
+        let url = `posts.json?limit=${limit}&page=${page}&tags=${tags.join('+')}`;
         const resp = await this.#get(url);
         const data = await resp.json();
         return new response(data['posts'], resp.ok, resp.status);
