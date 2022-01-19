@@ -10,7 +10,7 @@ const colors = {
 
 class Logger {
 	constructor(loc, fn) {
-		this.loc = loc + fn;
+
 		if(loc.endsWith('/')) {
 			this.loc = loc + fn;
 		} else {
