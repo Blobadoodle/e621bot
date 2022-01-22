@@ -13,16 +13,16 @@ exports.run = async (client, message, args, level) => {
 	id = id[id.length - 1]; // Get last string of numbers in string
 	const post = await e6.getpost(id);
 
+	if (post.status === 404) return message.channel.send('Nobody here but us chickens!');
+
+	if (!post.ok) return message.channel.send('A server error was encountered. Perhaps e621 is down?');
+
 	const uploader = await e6.getuser(post.data.uploader_id);
 
 	let avatar = '';
 	
 	if(uploader.data.avatar_id != null) avatar = await e6.getpost(uploader.data.avatar_id);
 	avatar = avatar.data.file.url;
-
-	if (post.status === 404) return message.channel.send('Nobody here but us chickens!');
-
-	if (!post.ok) return message.channel.send('A server error was encountered. Perhaps e621 is down?');
 
 	const embed = {
 		'type': 'rich',
