@@ -21,8 +21,10 @@ exports.run = async (client, message, args, level) => {
 
 	let avatar = '';
 	
-	if(uploader.data.avatar_id != null) avatar = await e6.getpost(uploader.data.avatar_id);
-	avatar = avatar.data.file.url;
+	if(uploader.data.avatar_id != null) {
+		avatar = await e6.getpost(uploader.data.avatar_id);
+		avatar = avatar.data.file.url;
+	}
 
 	const embed = {
 		'type': 'rich',
@@ -46,9 +48,7 @@ exports.run = async (client, message, args, level) => {
 			}
 		],
 		'image': {
-			'url': post.data.file.url ?? '',
-			'height': post.data.file.height ?? 0,
-			'width': post.data.file.width ?? 0
+			'url': post.data.file.url ?? ''
 		},
 		'author': {
 			'name': uploader.data.name,

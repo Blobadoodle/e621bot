@@ -18,8 +18,10 @@ exports.run = async (client, message, args, level) => {
 
 	let avatar = '';
 	
-	if(uploader.data.avatar_id != null) avatar = await e6.getpost(uploader.data.avatar_id);
-	avatar = avatar.data.file.url;
+	if(uploader.data.avatar_id != null) {
+		avatar = await e6.getpost(uploader.data.avatar_id);
+		avatar = avatar.data.file.url;
+	}
 
 	const embed = {
 		'type': 'rich',
