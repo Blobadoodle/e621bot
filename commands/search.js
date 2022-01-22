@@ -9,6 +9,10 @@ exports.run = async (client, message, args, level) => {
 	const posts = await e6.search(args, 1, 1);
 	const post = posts.data[0];
 
+	if(!posts.data.length) return message.channel.send('Nobody here but us chickens!');
+
+	if(!posts.ok) return message.channel.send('A server errror was encountered. Perhaps e621 is down?');
+
 	const uploader = await e6.getuser(post.uploader_id);
 
 	let avatar = '';
