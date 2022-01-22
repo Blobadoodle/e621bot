@@ -17,26 +17,6 @@ function permlevel(message) {
 	}
 	return permlvl;
 }
-
-function getSettings(guild) {
-	settings.ensure("default", config.defaultSettings);
-	if (!guild) return settings.get("default");
-	const guildConf = settings.get(guild.id) || {};
-
-	return ({...settings.get("default"), ...guildConf});
-}
-
-async function awaitReply(msg, question, limit = 60000) {
-	const filter = m => m.author.id === msg.author.id;
-	await msg.channel.send(question);
-	try {
-	  const collected = await msg.channel.awaitMessages({ filter, max: 1, time: limit, errors: ["time"] });
-	  return collected.first().content;
-	} catch (e) {
-	  return false;
-	}
-  }
-
   
 process.on("uncaughtException", (err) => {
 	const errorMsg = err.stack.replace(new RegExp(`${__dirname}/`, "g"), "./");
