@@ -2,17 +2,30 @@ const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
 
-exports.run = async (client, message, args, level) => {
+module.exports = async (client, interaction) => {
+
+	if(!interaction.isButton()) return;
+
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
-	if(!args.length) return message.channel.send('You need to supply one or more tags to serach for'); // Check if args are empty
+	const embed = interaction.message.embeds[0];
+	const footer = embed.footer.text;
+	const msg = interaction.message;
 
-	const posts = await e6.search(args, 1, 1);
+	let pageStr, tagStr;
+	[pageStr, tagStr] = footer.split('\n');
+	const cpage = parseInt(pageStr.substring(6));
+	const tags = tagStr.substring(8).split(' ');
+	let page = cpage;
+
+	if(interaction.customId === 'next') page++;
+	else page--;
+
+	const posts = await e6.search(tags, 1, page);
 	const post = posts.data[0];
+	if(!posts.data.length) return msg.edit('Nobody here but us chickens');
 
-	if(!posts.data.length) return message.channel.send('Nobody here but us chickens!');
-
-	if(!posts.ok) return message.channel.send('A server errror was encountered. Perhaps e621 is down?');
+	if(!posts.ok) return msg.edit('A server error was encountered. Perhaps e621 is down?');
 
 	const uploader = await e6.getuser(post.uploader_id);
 
@@ -21,7 +34,7 @@ exports.run = async (client, message, args, level) => {
 	if(uploader.data.avatar_id != null) avatar = await e6.getpost(uploader.data.avatar_id);
 	avatar = avatar.data.file.url;
 
-	const embed = {
+	const NewEmbed = {
 		'type': 'rich',
 		'title': 'e621.net',
 		'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
@@ -53,10 +66,10 @@ exports.run = async (client, message, args, level) => {
 			'icon_url': avatar
 		},
 		'footer': {
-			'text': `Page: 1\nSearch: ${args.join(' ')}`
+			'text': `Page: ${page}\nSearch: ${tags.join(' ')}`
 		},
 		'url': `https://e621.net/posts/${post.id}`
-	}	
+	}
 
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
@@ -69,19 +82,6 @@ exports.run = async (client, message, args, level) => {
 			.setStyle('PRIMARY'),
 	);
 
-	return message.channel.send({'embeds': [embed], components: [row]});
-}
-
-exports.conf = {
-	enabled: true,
-	guildOnly: false,
-	aliases: [],
-	permLevel: 'User'
+	interaction.deferUpdate();
+	return msg.edit({'embeds': [NewEmbed], components: [row]})
 };
-
-exports.help = {
-	name: 'search',
-	category: 'General',
-	description: 'Search e621 posts by tags, seperated by spaces',
-	usage: 'search <tags>'
-}
