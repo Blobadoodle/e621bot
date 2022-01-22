@@ -1,8 +1,6 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 
-const colours = [ 0xffb538, 0x012e57, 0x3673aa, 0xffffff ]
-
 exports.run = async (client, message, args, level) => {
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
@@ -31,7 +29,7 @@ exports.run = async (client, message, args, level) => {
 		"type": "rich",
 		"title": user.data.name,
 		"description": "",
-		"color":  colours[Math.floor(Math.random()*colours.length)],
+		"color":  e6.colours[Math.floor(Math.random()*e6.colours.length)],
 		"fields": [
 		  {
 			"name": `Join Date`,

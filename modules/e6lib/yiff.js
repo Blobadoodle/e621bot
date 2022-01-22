@@ -29,7 +29,9 @@ class e621js {
         };
         this.end = 'https://e621.net/';
 
-        this.#limiter = new RateLimiter({tokensPerInterval: 1, interval: 'second'})
+        this.#limiter = new RateLimiter({tokensPerInterval: 1, interval: 'second'});
+
+        this.colours = [ 0xffb538, 0x012e57, 0x3673aa, 0xffffff ];
     }
 
     async #get(url) {
