@@ -1,6 +1,5 @@
 const log = require('../log.js');
 const config = require('../config.js');
-const { settings } = require('./settings.js');
 
 function permlevel(message) {
 	let permlvl = 0;
@@ -30,4 +29,4 @@ process.on("unhandledRejection", err => {
 	log.error(`Unhandled rejection: ${err}`);
 });
   
-module.exports = { permlevel, awaitReply, getSettings };
+module.exports = { permlevel };
