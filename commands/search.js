@@ -9,7 +9,7 @@ exports.run = async (client, message, args, level) => {
 
 
 	const blacklist = ['scat', 'gore', 'watersport'];
-	let tags = args;
+	let tags = [...args];
 
 	for(i in blacklist) {
 		tags.push(`-${blacklist[i]}`)

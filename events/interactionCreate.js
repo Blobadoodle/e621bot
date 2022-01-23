@@ -42,11 +42,13 @@ module.exports = async (client, interaction) => {
 
 		const blacklist = ['scat', 'gore', 'watersport'];
 	
+		let stags = [...tags];
+
 		for(i in blacklist) {
-			tags.push(`-${blacklist[i]}`)
+			stags.push(`-${blacklist[i]}`)
 		}
 
-		const posts = await e6.search(tags, 1, page);
+		const posts = await e6.search(stags, 1, page);
 		const post = posts.data[0];
 
 		const nothinghereembed = {
