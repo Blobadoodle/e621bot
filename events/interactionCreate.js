@@ -16,7 +16,7 @@ module.exports = async (client, interaction) => {
 		let pageStr, tagStr;
 		[pageStr, tagStr] = footer.split('\n');
 		const cpage = parseInt(pageStr.substring(6));
-		const tags = tagStr.substring(8).split(' ');
+		let tags = tagStr.substring(8).split(' ');
 		let page = cpage;
 
 		if(interaction.customId === 'next') page++;
@@ -39,6 +39,12 @@ module.exports = async (client, interaction) => {
 				.setLabel('prev')
 				.setStyle('PRIMARY'),
 		);
+
+		const blacklist = ['scat', 'gore', 'watersport'];
+	
+		for(i in blacklist) {
+			tags.push(`-${blacklist[i]}`)
+		}
 
 		const posts = await e6.search(tags, 1, page);
 		const post = posts.data[0];

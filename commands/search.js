@@ -7,7 +7,15 @@ exports.run = async (client, message, args, level) => {
 
 	if(!args.length) return message.channel.send('You need to supply one or more tags to serach for'); // Check if args are empty
 
-	const posts = await e6.search(args, 1, 1);
+
+	const blacklist = ['scat', 'gore', 'watersport'];
+	let tags = args;
+
+	for(i in blacklist) {
+		tags.push(`-${blacklist[i]}`)
+	}
+
+	const posts = await e6.search(tags, 1, 1);
 	const post = posts.data[0];
 
 	if(!posts.data.length) return message.channel.send('Nobody here but us chickens!');
