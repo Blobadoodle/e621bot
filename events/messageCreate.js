@@ -28,7 +28,7 @@ module.exports = async (client, message) => {
 
 	try {
 		await cmd.run(client, message, args, level);
-		log.info(`${message.author.id} ran command ${cmd.help.name}`);
+		log.info(`${message.author.id} ran command &${cmd.help.name} ${args.join(' ')}`);
 	} catch (e) {
 		console.error(e);
 		log.error(`The command ${cmd.help.name} ran by ${message.author.id} encountered an error`);
