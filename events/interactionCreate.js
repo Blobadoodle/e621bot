@@ -22,9 +22,41 @@ module.exports = async (client, interaction) => {
 		if(interaction.customId === 'next') page++;
 		else page--;
 
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('prev')
+				.setLabel('prev')
+				.setStyle('PRIMARY'),
+			new MessageButton()
+				.setCustomId('next')
+				.setLabel('next')
+				.setStyle('PRIMARY'),
+		);
+
+		const prevrow = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('prev')
+				.setLabel('prev')
+				.setStyle('PRIMARY'),
+		);
+
 		const posts = await e6.search(tags, 1, page);
 		const post = posts.data[0];
-		if(!posts.data.length) return msg.edit('Nobody here but us chickens');
+
+		const nothinghereembed = {
+			'type': 'rich',
+			'title': 'e621.net',
+			'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
+			'description': 'Nobody here but us chickens!',
+			'footer': {
+				'text': `Page: ${page}\nSearch: ${tags.join(' ')}`
+			}
+		}
+
+		if(!posts.data.length) { 
+			interaction.deferUpdate();
+			return msg.edit({embeds: [nothinghereembed], components: [prevrow]});
+		}
 
 		if(!posts.ok) return msg.edit('A server error was encountered. Perhaps e621 is down?');
 
@@ -71,17 +103,6 @@ module.exports = async (client, interaction) => {
 			},
 			'url': `https://e621.net/posts/${post.id}`
 		}
-
-		const row = new MessageActionRow().addComponents(
-			new MessageButton()
-				.setCustomId('prev')
-				.setLabel('prev')
-				.setStyle('PRIMARY'),
-			new MessageButton()
-				.setCustomId('next')
-				.setLabel('next')
-				.setStyle('PRIMARY'),
-		);
 
 		interaction.deferUpdate();
 		return msg.edit({'embeds': [NewEmbed], components: [row]})
@@ -155,6 +176,6 @@ module.exports = async (client, interaction) => {
 		);
 
 		interaction.deferUpdate();
-		return msg.edit({'embeds': [newEmbed], components: [row]});
+		return msg.edit({embeds: [newEmbed], components: [row], content: ''});
 	}
 };
