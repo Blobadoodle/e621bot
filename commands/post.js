@@ -1,5 +1,6 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
+const { MessageActionRow, MessageButton } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
@@ -26,7 +27,7 @@ exports.run = async (client, message, args, level) => {
 		avatar = avatar.data.file.url;
 	}
 
-	const embed = {
+	let embed = {
 		'type': 'rich',
 		'title': 'e621.net',
 		'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
@@ -55,10 +56,35 @@ exports.run = async (client, message, args, level) => {
 			'url': `https://e621.net/users/${uploader.data.id}`,
 			'icon_url': avatar
 		},
-		'url': `https://e621.net/posts/${post.data.id}`
+		'url': `https://e621.net/posts/${post.data.id}`,
+		'footer': {
+			'text': `ID: ${post.data.id}`
+		}
 	}
 
-	return message.channel.send({'embeds': [embed]});
+	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
+
+	const blacklist = ['gore', 'scat', 'watersports']
+
+	const badtags = tags.filter(element => blacklist.includes(element));
+
+	if(badtags.length != 0) {
+		delete embed['image'];
+		embed['description'] = `**This post contains the tags: \`${badtags.join(', ')}\` which are on your blacklist. Are you sure you want to view ths post?**`;
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('show')
+				.setLabel('Show anyway')
+				.setStyle('DANGER'),
+			new MessageButton()
+				.setCustomId('delete')
+				.setLabel('Cancel')
+				.setStyle('SECONDARY'),
+		);
+		return message.channel.send({'embeds': [embed], components: [row]});
+	} else {
+		return message.channel.send({'embeds': [embed]});
+	}
 }
 
 exports.conf = {
