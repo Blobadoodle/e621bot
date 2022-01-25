@@ -1,6 +1,6 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
-const { MessageActionRow, MessageButton } = require('discord.js');
+const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
@@ -22,57 +22,20 @@ exports.run = async (client, message, args, level) => {
 
 	if(!posts.ok) return message.channel.send('A server errror was encountered. Perhaps e621 is down?');
 
-	const uploader = await e6.getuser(post.uploader_id);
-
-	let avatar = '';
-	
-	if(uploader.data.avatar_id != null) {
-		avatar = await e6.getpost(uploader.data.avatar_id);
-		avatar = avatar.data.file.url;
-	}
-
-	const embed = {
-		'type': 'rich',
-		'title': 'e621.net',
-		'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
-		'fields': [
-			{
-				'name': 'Score:',
-				'value': String(post.score.total),
-				'inline': true
-			},
-			{
-				'name': 'Favourites:',
-				'value': String(post.fav_count),
-				'inline': true
-			},
-			{
-				'name': 'Comments:',
-				'value': String(post.comment_count),
-				'inline': true
-			}
-		],
-		'image': {
-			'url': post.file.url ?? '',
-			'height': post.file.height ?? 0,
-			'width': post.file.width ?? 0
-		},
-		'author': {
-			'name': uploader.data.name,
-			'url': `https://e621.net/users/${uploader.data.id}`,
-			'icon_url': avatar
-		},
-		'footer': {
-			'text': `Page: 1\nSearch: ${args.join(' ')}`
-		},
-		'url': `https://e621.net/posts/${post.id}`
-	}	
+	const embed = new MessageEmbed()
+		.setColor('#0099ff')
+		.setTitle('e621.net')
+		.setURL(`https://e621.net/posts/${post.id}`)
+		.setAuthor({name: post.tags.artist.join(' '), url: `https://e621.net/users/${post.uploader}`})
+		.setFooter({text: `Page: 1\nSearch: ${args.join(' ')}`})
+		.addFields(
+			{name: 'Score', value: String(post.score.total), inline: true},
+			{name: 'Favourites', value: String(post.fav_count), inline: true},
+			{name: 'Comments', value: String(post.comment_count), inline: true}
+		)
+		.setImage(post.file.url ?? '')
 
 	const row = new MessageActionRow().addComponents(
-		new MessageButton()
-			.setCustomId('prev')
-			.setLabel('prev')
-			.setStyle('PRIMARY'),
 		new MessageButton()
 			.setCustomId('next')
 			.setLabel('next')

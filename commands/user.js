@@ -1,5 +1,6 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
+const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
@@ -24,52 +25,24 @@ exports.run = async (client, message, args, level) => {
 
 	if(user.data.avatar_id != null) avat_post = await e6.getpost(user.data.avatar_id);
 
-
-	let embed = {
-		"type": "rich",
-		"title": user.data.name,
-		"description": "",
-		"color":  e6.colours[Math.floor(Math.random()*e6.colours.length)],
-		"fields": [
-		  {
-			"name": `Join Date`,
-			"value": date,
-			"inline": true
-		  },
-		  {
-			"name": `Level`,
-			"value": `${user.data.level} (${user.data.level_string})`,
-			"inline": true
-		  },
-		  {
-			"name": `Posts`,
-			"value": String(user.data.post_upload_count),
-			"inline": true
-		  },
-		  {
-			"name": `Forum Posts`,
-			"value": String(user.data.forum_post_count),
-			"inline": true
-		  },
-		  {
-			"name": `Comments`,
-			"value": String(user.data.comment_count),
-			"inline": true
-		  }
-		],
-		"url": `https://e621.net/users/${id}`
-	  }
+	const embed = new MessageEmbed()
+		.setColor('#0099ff')
+		.setTitle(user.data.name)
+		.setURL(`https://e621.net/users/${id}`)
+		.addFields(
+			{ name: 'Join Date', value: date, inline: true},
+			{ name: 'Level', value: `${user.data.level} (${user.data.level_string})`, inline: true},
+			{ name: 'Posts', value: String(user.data.post_upload_count), inline: true},
+			{ name: 'Forum Posts', value: String(user.data.forum_post_count), inline: true},
+			{ name: 'Comments', value: String(user.data.comment_count), inline: true}
+		)
+		.setTimestamp();
 	
-	if (avat_post != undefined) {
-		embed["image"] = {
-			"url": avat_post.data.file.url,
-			"height": avat_post.data.file.height,
-			"width": avat_post.data.file.width
-		}
-	}
+	if (avat_post != undefined) embed.setImage(avat_post.data.file.url);
 
 	return message.channel.send({'embeds': [embed]});
 }
+
 
 exports.conf = {
 	enabled: true,
