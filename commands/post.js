@@ -28,7 +28,7 @@ exports.run = async (client, message, args, level) => {
 			{ name: 'Comments', value: String(post.data.comment_count), inline: true}
 		)
 		.setFooter({ text: `ID: ${post.data.id}`})
-		.setAuthor({name: post.data.tags.artist.join(' '), url: `https://e621.net/users/${post.data.uploader}`});
+		.setAuthor({name: post.data.tags.artist.join(' ')});
 
 	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
 

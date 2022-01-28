@@ -26,7 +26,7 @@ exports.run = async (client, message, args, level) => {
 		.setColor(e6.randcol())
 		.setTitle('e621.net')
 		.setURL(`https://e621.net/posts/${post.id}`)
-		.setAuthor({name: post.tags.artist.join(' '), url: `https://e621.net/users/${post.uploader}`})
+		.setAuthor({name: post.tags.artist.join(' ')})
 		.setFooter({text: `Page: 1\nSearch: ${args.join(' ')}`})
 		.addFields(
 			{name: 'Score', value: String(post.score.total), inline: true},
