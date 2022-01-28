@@ -96,49 +96,18 @@ module.exports = async (client, interaction) => {
 
 		if (!post.ok) return msg.edit({content: 'A server error was encountered. Perhaps e621 is down?'});
 
-		const uploader = await e6.getuser(post.data.uploader_id);
-		
-		let avatar = '';
-	
-		if(uploader.data.avatar_id != null) {
-			avatar = await e6.getpost(uploader.data.avatar_id);
-			avatar = avatar.data.file.url;
-		}
-
-		const newEmbed = {
-			'type': 'rich',
-			'title': 'e621.net',
-			'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
-			'fields': [
-				{
-					'name': 'Score:',
-					'value': String(post.data.score.total),
-					'inline': true
-				},
-				{
-					'name': 'Favourites:',
-					'value': String(post.data.fav_count),
-					'inline': true
-				},
-				{
-					'name': 'Comments:',
-					'value': String(post.data.comment_count),
-					'inline': true
-				}
-			],
-			'image': {
-				'url': post.data.file.url ?? ''
-			},
-			'author': {
-				'name': uploader.data.name,
-				'url': `https://e621.net/users/${uploader.data.id}`,
-				'icon_url': avatar
-			},
-			'url': `https://e621.net/posts/${post.data.id}`,
-			'footer': {
-				'text': `ID: ${post.data.id}`
-			}
-		}
+		const newEmbed = new MessageEmbed()
+			.setColor(e6.randcol())
+			.setTitle('e621.net')
+			.setURL(`https://e621.net/posts/${post.data.id}`)
+			.addFields(
+				{name: 'Score', value: String(post.data.score.total)},
+				{name: 'Favourites', value: String(post.data.fav_count)},
+				{name: 'Commnets', value: String(post.data.comment_count)}
+			)
+			.setImage(post.data.file.url ?? '')
+			.setFooter({text: `ID: ${post.data.id}`})
+			.setAuthor({name: post.data.tags.artist.join(' ')})
 
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
