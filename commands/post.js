@@ -19,7 +19,7 @@ exports.run = async (client, message, args, level) => {
 	if (!post.ok) return message.channel.send('A server error was encountered. Perhaps e621 is down?');
 
 	const embed =  new MessageEmbed()
-		.setColor('#0099ff')
+		.setColor(e6.randcol())
 		.setTitle('e621.net')
 		.setURL(`https://e621.net/posts/${post.data.id}`)
 		.addFields(

@@ -26,7 +26,7 @@ exports.run = async (client, message, args, level) => {
 	if(user.data.avatar_id != null) avat_post = await e6.getpost(user.data.avatar_id);
 
 	const embed = new MessageEmbed()
-		.setColor('#0099ff')
+		.setColor(e6.randcol())
 		.setTitle(user.data.name)
 		.setURL(`https://e621.net/users/${id}`)
 		.addFields(

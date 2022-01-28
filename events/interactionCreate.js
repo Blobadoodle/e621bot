@@ -52,7 +52,7 @@ module.exports = async (client, interaction) => {
 		const post = posts.data[0];
 
 		const emptyembed = new MessageEmbed()
-			.setColor('#0099ff')
+			.setColor(e6.randcol())
 			.setTitle('e621.net')
 			.setDescription('Nobody here but us chickens!')
 			.setFooter({text: `Page: ${page}\nSearch: ${tags.join(' ')}`})
@@ -64,47 +64,8 @@ module.exports = async (client, interaction) => {
 
 		if(!posts.ok) return msg.edit('A server error was encountered. Perhaps e621 is down?');
 
-		/*
-		const NewEmbedo = {
-			'type': 'rich',
-			'title': 'e621.net',
-			'color': e6.colours[Math.floor(Math.random()*e6.colours.length)],
-			'fields': [
-				{
-					'name': 'Score:',
-					'value': String(post.score.total),
-					'inline': true
-				},
-				{
-					'name': 'Favourites:',
-					'value': String(post.fav_count),
-					'inline': true
-				},
-				{
-					'name': 'Comments:',
-					'value': String(post.comment_count),
-					'inline': true
-				}
-			],
-			'image': {
-				'url': post.file.url ?? '',
-				'height': post.file.height ?? 0,
-				'width': post.file.width ?? 0
-			},
-			'author': {
-				'name': uploader.data.name,
-				'url': `https://e621.net/users/${uploader.data.id}`,
-				'icon_url': avatar
-			},
-			'footer': {
-				'text': `Page: ${page}\nSearch: ${tags.join(' ')}`
-			},
-			'url': `https://e621.net/posts/${post.id}`
-		}
-		*/
-
 		const NewEmbed = new MessageEmbed()
-			.setColor('#0099ff')
+			.setColor(e6.randcol())
 			.setTitle('e621.net')
 			.setURL(`https://e621.net/posts/${post.id}`)
 			.addFields(

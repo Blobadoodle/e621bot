@@ -23,7 +23,7 @@ exports.run = async (client, message, args, level) => {
 	if(!posts.ok) return message.channel.send('A server errror was encountered. Perhaps e621 is down?');
 
 	const embed = new MessageEmbed()
-		.setColor('#0099ff')
+		.setColor(e6.randcol())
 		.setTitle('e621.net')
 		.setURL(`https://e621.net/posts/${post.id}`)
 		.setAuthor({name: post.tags.artist.join(' '), url: `https://e621.net/users/${post.uploader}`})

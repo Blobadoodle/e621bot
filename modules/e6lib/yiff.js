@@ -30,8 +30,11 @@ class e621js {
         this.end = 'https://e621.net/';
 
         this.#limiter = new RateLimiter({tokensPerInterval: 1, interval: 'second'});
+    }
 
-        this.colours = [ 0xffb538, 0x012e57, 0x3673aa, 0xffffff ];
+    randcol() {
+        const colours = [ '#0xffb538', '#0x012e57', '#3673aa', '#ffffff'  ];
+        return colours[Math.floor(Math.random()*colours.length)]
     }
 
     async #get(url) {
