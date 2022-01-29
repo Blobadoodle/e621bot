@@ -106,7 +106,7 @@ module.exports = async (client, interaction) => {
 			.addFields(
 				{name: 'Score', value: String(post.data.score.total)},
 				{name: 'Favourites', value: String(post.data.fav_count)},
-				{name: 'Commnets', value: String(post.data.comment_count)}
+				{name: 'Comments', value: String(post.data.comment_count)}
 			)
 			.setImage(post.data.file.url ?? '')
 			.setFooter({text: `ID: ${post.data.id}`})
