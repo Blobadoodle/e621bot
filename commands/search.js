@@ -8,7 +8,7 @@ exports.run = async (client, message, args, level) => {
 
 	if(!args.length) return message.channel.send('You need to supply one or more tags to serach for'); // Check if args are empty
 
-	const settings = getSettings(message.guild);
+	const settings = message.settings;
 
 	const blacklist = settings.globalBlacklist;
 

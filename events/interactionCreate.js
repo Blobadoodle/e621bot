@@ -41,7 +41,7 @@ module.exports = async (client, interaction) => {
 				.setStyle('PRIMARY'),
 		);
 
-		const settings = getSettings(msg.guild);
+		const settings = message.settings;
 
 		const blacklist = settings.globalBlacklist;
 	

@@ -33,7 +33,7 @@ exports.run = async (client, message, args, level) => {
 
 	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
 
-	const settings = getSettings(message.guild);
+	const settings = message.settings;
 
 	const blacklist = settings.globalBlacklist;
 

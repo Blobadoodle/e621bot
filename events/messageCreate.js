@@ -1,12 +1,20 @@
 const config = require('../config.js');
 const log = require('../log.js');
-const { permlevel } = require('../modules/functions.js');
+const { permlevel, getSettings } = require('../modules/functions.js');
 
 module.exports = async (client, message) => {
 
 	const { container } = client;
 
 	const prefix = '&';
+
+	const settings = message.settings = getSettings(message.guild);
+
+	// Check if the bot was mentioned with no message which will show the prefix on that server
+	const prefixMention = new RegExp(`^<@!?${client.user.id}> ?$`);
+	if (message.content.match(prefixMention)) {
+		return message.channel.send(`My prefix on this guild is \`${settings.prefix}\``)
+	}
 
 	if (!message.content.startsWith(prefix)) return;
 
