@@ -1,6 +1,7 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { getSettings } = require('../modules/functions.js');
 
 module.exports = async (client, interaction) => {
 
@@ -40,7 +41,9 @@ module.exports = async (client, interaction) => {
 				.setStyle('PRIMARY'),
 		);
 
-		const blacklist = ['scat', 'gore', 'watersport'];
+		const settings = getSettings(msg.guild);
+
+		const blacklist = settings.globalBlacklist;
 	
 		let stags = [...tags];
 

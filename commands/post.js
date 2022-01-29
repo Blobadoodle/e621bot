@@ -1,5 +1,6 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
+const { getSettings } = require('../modules/functions.js');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
@@ -32,7 +33,9 @@ exports.run = async (client, message, args, level) => {
 
 	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
 
-	const blacklist = ['gore', 'scat', 'watersports']
+	const settings = getSettings(message.guild);
+
+	const blacklist = settings.globalBlacklist;
 
 	const badtags = tags.filter(element => blacklist.includes(element));
 

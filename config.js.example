@@ -24,6 +24,7 @@ const config = {
     "modRole": "Moderator",
     "adminRole": "Administrator",
     "systemNotice": "true", // This gives a notice when a user tries to run a command that they do not have permission to use.
+    "globalBlacklist": ["scat", "gore", "watersports"],
   },
 
   // PERMISSION LEVEL DEFINITIONS.

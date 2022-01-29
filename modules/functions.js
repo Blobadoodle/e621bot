@@ -1,5 +1,6 @@
 const log = require('../log.js');
 const config = require('../config.js');
+const { settings } = require('./settings');
 
 function permlevel(message) {
 	let permlvl = 0;
@@ -29,4 +30,11 @@ process.on("unhandledRejection", err => {
 	log.error(`Unhandled rejection: ${err}`);
 });
   
-module.exports = { permlevel };
+function getSettings(guild) {
+	if (!guild) return config.defaultSettings;
+	const guildConf = settings.get(guild.id) || config.defaultSettings;
+
+	return guildConf;
+}
+
+module.exports = { permlevel, getSettings };
