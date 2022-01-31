@@ -6,8 +6,6 @@ module.exports = async (client, message) => {
 
 	const { container } = client;
 
-	const prefix = '&';
-
 	const settings = message.settings = getSettings(message.guild);
 
 	// Check if the bot was mentioned with no message which will show the prefix on that server
@@ -16,7 +14,10 @@ module.exports = async (client, message) => {
 		return message.channel.send(`My prefix on this guild is \`${settings.prefix}\``)
 	}
 
-	if (!message.content.startsWith(prefix)) return;
+	// Check if message begins with prefix or bot mention
+	const prefix = new RegExp(`^<@!?${client.user.id}> |^\\${settings.prefix}`).exec(message.content);
+
+	if (!prefix) return;
 
 	if(message.author.bot) return;
 
