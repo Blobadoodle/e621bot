@@ -32,7 +32,7 @@ module.exports = async (client, message) => {
 	const level = permlevel(message);
 
 	if (level < container.levelCache[cmd.conf.permLevel]) {
-		return message.channel.send(`You do not have permission to use this command.`);
+		if (settings.systemNotice === "true") return message.channel.send(`You do not have permission to use this command.`);
 	}
 
 	try {
