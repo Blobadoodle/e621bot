@@ -10,9 +10,9 @@ module.exports = async (client, interaction) => {
 	if(interaction.customId === 'next' || interaction.customId === 'prev') {
 		const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
-		const embed = interaction.message.embeds[0];
-		const footer = embed.footer.text;
 		const msg = interaction.message;
+		const embed = msg.embeds[0];
+		const footer = embed.footer.text;
 
 		let pageStr, tagStr;
 		[pageStr, tagStr] = footer.split('\n');
@@ -41,7 +41,7 @@ module.exports = async (client, interaction) => {
 				.setStyle('PRIMARY'),
 		);
 
-		const settings = message.settings;
+		const settings = getSettings(msg.guild);
 
 		const blacklist = settings.globalBlacklist;
 	
@@ -87,9 +87,9 @@ module.exports = async (client, interaction) => {
 	} else if (interaction.customId === 'show') {
 		const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
-		const embed = interaction.message.embeds[0];
-		const footer = embed.footer.text;
 		const msg = interaction.message;
+		const embed = msg.embeds[0];
+		const footer = embed.footer.text;
 
 		const id = parseInt(footer.substring(4))
 
