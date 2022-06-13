@@ -1,6 +1,10 @@
+const log = require('../log.js');
+
 exports.run = async (client, message, args, level) => {
 	const pingMsg = await message.channel.send('Ping?');
-	return message.channel.send(`Pong!\n\nLatency: ${pingMsg.timestamp - message.timestamp}ms`);
+	const latency = pingMsg.createdTimestamp - message.createdTimestamp;
+	log.debug(`Pinged. Latency: ${latency}ms`);
+	return pingMsg.edit(`Pong!\nLatency: ${latency}ms`);
 }
 
 exports.conf = {

@@ -6,7 +6,7 @@ module.exports = (client, guild) => {
 	const embed = new MessageEmbed()
 		.setColor('#FF0000')
 		.setTitle('Welcome!')
-		.setDescription('Hello! My default prefix is \`&\`. You can editing the settings with \`&set\` command.')
+		.setDescription('Hello! My default prefix is \`&\`. You can edit the settings with \`&set\` command.')
 
 	const syschannel = guild.systemChannel;
 

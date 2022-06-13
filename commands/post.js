@@ -1,6 +1,4 @@
-const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
-const { getSettings } = require('../modules/functions.js');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {

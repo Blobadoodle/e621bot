@@ -9,8 +9,6 @@ exports.run = (client, message, args, level) => {
 
 		const enabledCommands = myCommands.filter(cmd => cmd.conf.enabled);
 
-		const commandNames = [...enabledCommands.keys()];
-
 		const sorted = enabledCommands.sort((p, c) => p.help.category > c.help.category ? 1 : 
 		  p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1 );
 

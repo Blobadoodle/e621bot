@@ -1,7 +1,5 @@
-const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
-const { getSettings } = require('../modules/functions.js');
 
 exports.run = async (client, message, args, level) => {
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);

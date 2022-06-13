@@ -1,4 +1,3 @@
-const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 const { MessageEmbed } = require('discord.js');
 

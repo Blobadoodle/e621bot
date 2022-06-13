@@ -1,4 +1,3 @@
-const config = require('../config.js');
 const log = require('../log.js');
 const { permlevel, getSettings } = require('../modules/functions.js');
 
@@ -28,6 +27,7 @@ module.exports = async (client, message) => {
 	const cmd = container.commands.get(command) || container.commands.get(container.aliases.get(command));
 
 	if (!cmd) return;
+	if (!cmd.conf.enabled) return;
 
 	const level = permlevel(message);
 
