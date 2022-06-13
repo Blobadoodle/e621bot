@@ -15,7 +15,7 @@
     "url": "git+https://github.com/Blobadoodle/e621bot.git"
   },
   "author": "Blobadoodle",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/Blobadoodle/e621bot/issues"
   },
