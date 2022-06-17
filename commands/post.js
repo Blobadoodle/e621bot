@@ -33,7 +33,7 @@ exports.run = async (client, message, args, level) => {
 
 	const settings = message.settings;
 
-	const blacklist = settings.globalBlacklist;
+	const blacklist = settings.serverBlacklist;
 
 	const badtags = tags.filter(element => blacklist.includes(element));
 

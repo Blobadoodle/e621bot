@@ -1,7 +1,10 @@
 const log = require('../log.js');
 const { permlevel, getSettings } = require('../modules/functions.js');
+const { getpasses } = require('../modules/passmsg.js');
 
 module.exports = async (client, message) => {
+
+	if(message.author.bot) return;
 
 	const { container } = client;
 
@@ -16,9 +19,12 @@ module.exports = async (client, message) => {
 	// Check if message begins with prefix or bot mention
 	const prefix = new RegExp(`^<@!?${client.user.id}> |^\\${settings.prefix}`).exec(message.content);
 
-	if (!prefix) return;
+	let passes = getpasses();
+	if(Object.keys(passes).length != 0) {
+		passes.func(client, message);
+	}
 
-	if(message.author.bot) return;
+	if (!prefix) return;
 
 	const args = message.content.split(' ');
 

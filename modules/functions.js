@@ -18,23 +18,45 @@ function permlevel(message) {
 	return permlvl;
 }
   
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", err => {
 	const errorMsg = err.stack.replace(new RegExp(`${__dirname}/`, "g"), "./");
 	log.error(`Uncaught Exception: ${errorMsg}`);
 	// Always best practice to let the code crash on uncaught exceptions. 
 	// Because you should be catching them anyway.
 	process.exit(1);
 });
-  
+/*
 process.on("unhandledRejection", err => {
 	log.error(`Unhandled rejection: ${err}`);
 });
-  
+*/
 function getSettings(guild) {
-	if (!guild) return config.defaultSettings;
-	const guildConf = settings.get(guild.id) || config.defaultSettings;
+	let guildConf = settings.get(guild.id);
+	if(guildConf != null && guildConf != undefined) {
 
-	return guildConf;
+		return guildConf;
+	} else {
+		guildConf = config.defaultSettings;
+	}
+	let csettings = {};
+
+	for(const i in guildConf) {
+		csettings[i.name] = i.value;
+	}
+
+	return csettings;
 }
 
-module.exports = { permlevel, getSettings };
+function setSettings(guild) {
+	const defaults = config.defaultSettings;
+
+	let csettings = {};
+
+	for(const i in defaults) {
+		csettings[i.name] = i.value;
+	}
+
+	return settings.set(guild.id, csettings);
+}
+
+module.exports = { permlevel, getSettings, setSettings };

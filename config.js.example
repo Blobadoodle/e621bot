@@ -19,13 +19,38 @@ const config = {
   // And are then completely ignored from this file. To modify default settings, use the `conf` command.
   // DO NOT REMOVE THIS BEFORE YOUR BOT IS LOADED AND FUNCTIONAL.
   
-  "defaultSettings" : {
-    "prefix": "&",
-    "modRole": "Moderator",
-    "adminRole": "Administrator",
-    "systemNotice": "true", // This gives a notice when a user tries to run a command that they do not have permission to use.
-    "globalBlacklist": ["scat", "gore", "watersports"],
-  },
+  "defaultSettings" : [
+    {
+      "name": "prefix",
+      "value": "&",
+      "prettyName": "Prefix",
+      "description": "The prefix used to call the bot.",
+    },
+    {
+      "name": "modRole",
+      "value": "Moderator",
+      "prettyName": "Moderator Role",
+      "description": "The role used to give users the ability to use mod commands.",
+    },
+    {
+      "name": "adminRole",
+      "value": "Administrator",
+      "prettyName": "Admin Role",
+      "description": "The role used to give users the ability to use admin commands.",
+    },
+    {
+      "name": "systemNotice",
+      "value": true,
+      "prettyName": "System Notice",
+      "description": "Toggle replying to commands if the user does not have permission",
+    },
+    {
+      "name": "serverBlacklist",
+      "value": ["scat", "gore", "watersports"],
+      "prettyName": "Server-wide Blacklist",
+      "description": "Tags to be blacklisted to everyone accross the server"
+    }
+  ],
 
   // PERMISSION LEVEL DEFINITIONS.
 

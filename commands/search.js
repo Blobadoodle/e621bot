@@ -8,7 +8,7 @@ exports.run = async (client, message, args, level) => {
 
 	const settings = message.settings;
 
-	const blacklist = settings.globalBlacklist;
+	const blacklist = settings.serverBlacklist;
 
 	let tags = [...args];
 
