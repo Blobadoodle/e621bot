@@ -1,12 +1,56 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
+const { settings } = require('../modules/settings');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
-const { getSettings } = require('../modules/functions.js');
+const { getSettings, setSettings } = require('../modules/functions.js');
+const { pass } = require('../modules/passmsg.js');
 
 module.exports = async (client, interaction) => {
 
-	if(!interaction.isButton()) return;
+	if(interaction.isButton()) return handleButton(interaction);
+	else if(interaction.isSelectMenu()) return handleSelect(interaction);
+	else return;
+};
 
+async function handleSelect(interaction) {
+	const value = interaction.values[0];
+
+	pass(interaction.message.author.id, interaction.message.channel.id, (client, message) => { 
+		let msg = message.content;
+		msg = msg.toLowerCase();
+
+		if(value === 'serverBlacklist') { // Blacklist is to be percieved as comma delimited lists.
+			msg = msg.split(',');
+			for (const i in msg) {
+				msg[i] = msg[i].trim();
+			}
+		} else if(value === 'systemNotice') {
+			if(msg === 'y' || msg.includes('yes')) msg = true;
+			else msg = false;
+		}
+
+		if(!settings.has(message.guild.id)) setSettings(message.guild);
+		settings.set(message.guild.id, msg, value);
+		return interaction.message.edit(`Successfully changed setting to ${msg}`);
+	});
+	
+	switch(value) {
+		case 'prefix':
+			return interaction.message.edit({content: 'Please select the prefix for this server.', components: []});
+		case 'modRole':
+			return interaction.message.edit({content: 'Please type the moderator role for this server.', components: []});
+		case 'adminRole':
+			return interaction.message.edit({content: 'Please type the administrator role for this server.', components: []});
+		case 'systemNotice':
+			return interaction.message.edit({content: 'Please reply with yes or no to toggle replying to commands if the user does not have permission', components: []});
+		case 'serverBlacklist':
+			const settings = getSettings(interaction.message.guild);
+			const blacklist = settings.serverBlacklist;
+			return interaction.message.edit({content: `Please type the tag blacklist that will be applied to everyone across the server, seperated by commas.\nCurrent blacklist is: \`${blacklist.join(',')}\``, components: []});
+	}
+}
+
+async function handleButton(interaction) {
 	if(interaction.customId === 'next' || interaction.customId === 'prev') {
 		const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
@@ -43,7 +87,7 @@ module.exports = async (client, interaction) => {
 
 		const settings = getSettings(msg.guild);
 
-		const blacklist = settings.globalBlacklist;
+		const blacklist = settings.serverBlacklist;
 	
 		let stags = [...tags];
 
@@ -122,4 +166,4 @@ module.exports = async (client, interaction) => {
 		interaction.deferUpdate();
 		return msg.edit({embeds: [newEmbed], components: [row]});
 	}
-};
+}
