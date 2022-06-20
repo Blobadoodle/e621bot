@@ -68,11 +68,13 @@ async function handleNextPrev(interaction) {
 	const embed = msg.embeds[0];
 	const footer = embed.footer.text;
 
-	let pageStr, tagStr;
-	[pageStr, tagStr] = footer.split('\n');
+	let pageStr, tagStr, idStr;
+	[idStr, pageStr, tagStr] = footer.split('\n');
+	const id = parseInt(idStr.substring(4));
 	const cpage = parseInt(pageStr.substring(6));
 	let tags = tagStr.substring(8).split(' ');
 	let page = cpage;
+	log.info(`${interaction.customId} page: ${page} tags: ${tags} id: ${id}`);
 
 	if(interaction.customId === 'next') page++;
 	else page--;
@@ -111,6 +113,7 @@ async function handleNextPrev(interaction) {
 	const emptyembed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('e621.net')
+		.setURL('https://e621.net')
 		.setDescription('Nobody here but us chickens!')
 		.setFooter({text: `Page: ${page}\nSearch: ${tags.join(' ')}`})
 
@@ -123,7 +126,7 @@ async function handleNextPrev(interaction) {
 
 	const NewEmbed = new MessageEmbed()
 		.setColor(e6.randcol())
-		.setTitle('e621.net')
+		.setTitle('Link')
 		.setURL(`https://e621.net/posts/${post.id}`)
 		.addFields(
 			{name: 'Score', value: String(post.score.total), inline: true},
@@ -131,7 +134,7 @@ async function handleNextPrev(interaction) {
 			{name: 'Comments', value:String(post.comment_count), inline: true}
 		)
 		.setImage(post.file.url)
-		.setFooter({text: `Page: ${page}\nSearch: ${tags.join(' ')}`});
+		.setFooter({text: `ID: ${post.id}\nPage: ${page}\nSearch: ${tags.join(' ')}`});
 
 	interaction.deferUpdate();
 	return msg.edit({'embeds': [NewEmbed], components: [row]})
@@ -154,7 +157,7 @@ async function handleShow(interaction) {
 
 	const newEmbed = new MessageEmbed()
 		.setColor(e6.randcol())
-		.setTitle('e621.net')
+		.setTitle('Link')
 		.setURL(`https://e621.net/posts/${post.data.id}`)
 		.addFields(
 			{name: 'Score', value: String(post.data.score.total)},

@@ -25,10 +25,10 @@ exports.run = async (client, message, args, level) => {
 
 	const embed = new MessageEmbed()
 		.setColor(e6.randcol())
-		.setTitle('e621.net')
+		.setTitle('eLink')
 		.setURL(`https://e621.net/posts/${post.id}`)
 		.setAuthor({name: post.tags.artist.join(' ')})
-		.setFooter({text: `Page: 1\nSearch: ${args.join(' ')}`})
+		.setFooter({text: `ID: ${post.id}\nPage: 1\nSearch: ${args.join(' ')}`})
 		.addFields(
 			{name: 'Score', value: String(post.score.total), inline: true},
 			{name: 'Favourites', value: String(post.fav_count), inline: true},

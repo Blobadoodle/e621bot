@@ -19,14 +19,14 @@ exports.run = async (client, message, args, level) => {
 
 	const embed =  new MessageEmbed()
 		.setColor(e6.randcol())
-		.setTitle('e621.net')
+		.setTitle('Link')
 		.setURL(`https://e621.net/posts/${post.data.id}`)
 		.addFields(
 			{ name: 'Score', value: String(post.data.score.total), inline: true},
 			{ name: 'Favourites', value: String(post.data.fav_count), inline: true},
 			{ name: 'Comments', value: String(post.data.comment_count), inline: true}
 		)
-		.setFooter({ text: `ID: ${post.data.id}`})
+		.setFooter({ text: `ID: ${post.data.id}\n`})
 		.setAuthor({name: post.data.tags.artist.join(' ')});
 
 	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
