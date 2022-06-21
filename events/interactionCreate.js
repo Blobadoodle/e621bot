@@ -309,6 +309,7 @@ async function handleShow(interaction) {
 		.setImage(post.data.file.url ?? '')
 		.setFooter({text: `ID: ${post.data.id}`})
 		.setAuthor({name: post.data.tags.artist.join(' ')})
+		.setTimestamp(new Date(post.data.created_at));
 
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
