@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 
 exports.run = (client, message, args, level) => {
 	const { container } = client;
@@ -15,7 +15,7 @@ exports.run = (client, message, args, level) => {
 		let fields = [];
 		
 		sorted.forEach( c => {
-			fields.push({name: c.help.name, value: `${c.help.description}\nUsage: \`${c.help.usage}\``})
+			fields.push({name: c.help.name, value: `${c.help.description}\nUsage: \`${message.settings.prefix}${c.help.usage}\``, inline: true})
 		})
 
 		const embed = new MessageEmbed()
@@ -23,9 +23,21 @@ exports.run = (client, message, args, level) => {
 			.setTitle('Help')
 			.setDescription('Help for all available commands')
 			.addFields(...fields)
+			.setFooter({text: 'For any bug reports/feature requests/support with this bot please send me a message on Twitter or create a GitHub issue.'})
 			.setTimestamp();
 
-		return message.channel.send({embeds: [embed]})
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setLabel('Twitter')
+				.setStyle('LINK')
+				.setURL('https://twitter.com/Blobadoodle'),
+			new MessageButton()
+				.setLabel('GitHub')
+				.setStyle('LINK')
+				.setURL('https://github.com/Blobadoodle/e621bot')
+		)
+
+		return message.channel.send({embeds: [embed], components: [row]})
 	}
 }
 
@@ -41,5 +53,5 @@ exports.conf = {
 	name: "help",
 	category: "System",
 	description: "Displays all the available commands.",
-	usage: "help <command>"
+	usage: "help"
   };
