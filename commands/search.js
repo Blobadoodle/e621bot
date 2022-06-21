@@ -35,6 +35,7 @@ exports.run = async (client, message, args, level) => {
 			{name: 'Comments', value: String(post.comment_count), inline: true}
 		)
 		.setImage(post.file.url ?? '')
+		.setTimestamp(new Date(post.created_at));
 
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()

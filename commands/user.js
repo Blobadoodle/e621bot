@@ -35,7 +35,7 @@ exports.run = async (client, message, args, level) => {
 			{ name: 'Forum Posts', value: String(user.data.forum_post_count), inline: true},
 			{ name: 'Comments', value: String(user.data.comment_count), inline: true}
 		)
-		.setTimestamp();
+		.setTimestamp(new Date(user.data.created_at));
 	
 	if (avat_post != undefined) embed.setImage(avat_post.data.file.url);
 

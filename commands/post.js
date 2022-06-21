@@ -27,6 +27,7 @@ exports.run = async (client, message, args, level) => {
 			{ name: 'Comments', value: String(post.data.comment_count), inline: true}
 		)
 		.setFooter({ text: `ID: ${post.data.id}\n`})
+		.setTimestamp(new Date(post.data.created_at))
 		.setAuthor({name: post.data.tags.artist.join(' ')});
 
 	const row = new MessageActionRow().addComponents(

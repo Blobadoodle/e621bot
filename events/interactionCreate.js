@@ -102,7 +102,8 @@ async function handleHideTags(interaction) {
 		)
 		.setImage(post.data.file.url ?? '')
 		.setFooter({text: (interaction.customId === 'hidetags_post') ? `ID: ${id}\n` : `ID: ${id}\nPage: ${page}\nSearch: ${tags.join(' ')}`})
-		.setAuthor({name: post.data.tags.artist.join(' ')});
+		.setAuthor({name: post.data.tags.artist.join(' ')})
+		.setTimestamp(new Date(post.data.created_at));
 	
 	const row = new MessageActionRow()
 	if(interaction.customId === 'hidetags_search') {
@@ -181,6 +182,7 @@ async function handleShowTags(interaction) {
 			{name: 'Lore', value: tags.lore.join(', ') || '*None*', inline: true},
 			{name: 'Meta', value: tags.meta.join(', ') || '*None*', inline: true},
 		)
+		.setTimestamp(new Date(post.data.created_at));
 	
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
