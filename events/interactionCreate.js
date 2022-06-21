@@ -58,7 +58,140 @@ function handleButton(interaction) {
 		interaction.message.delete();
 	} else if (interaction.customId === 'show') {
 		handleShow(interaction);
+	} else if (interaction.customId === 'showtags') {
+		handleShowTags(interaction);
+	} else if (interaction.customId === 'hidetags_post' || interaction.customId === 'hidetags_search') {
+		handleHideTags(interaction);
 	}
+}
+
+async function handleHideTags(interaction) {
+	interaction.deferUpdate();
+
+	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
+	
+	const msg = interaction.message;
+	const embed = msg.embeds[0];
+	const footer = embed.footer.text;
+
+	let id, page, tags;
+
+	if(interaction.customId === 'hidetags_post') {
+		id = parseInt(footer.substring(4));
+	} else {
+		[id, page, tags] = footer.split('\n');
+		id = parseInt(id.substring(4));
+		page = parseInt(page.substring(6));
+		tags = tags.substring(8).split(' ');
+	}
+
+	const post = await e6.getpost(id);
+
+	if(post.status === 404) return msg.edit({content: 'Nobody here but us chickens!', embeds: [], components: []});
+
+	if(!post.ok) return msg.edit({content: 'A server error was encountered perhaps e621 is down?'});
+
+	const newEmbed = new MessageEmbed()
+		.setColor(e6.randcol())
+		.setTitle('Link')
+		.setURL(`https://e621.net/post/${id}`)
+		.addFields(
+			{name: 'Score', value: String(post.data.score.total)},
+			{name: 'Favourites', value: String(post.data.fav_count)},
+			{name: 'Comments', value: String(post.data.comment_count)}
+		)
+		.setImage(post.data.file.url ?? '')
+		.setFooter({text: (interaction.customId === 'hidetags_post') ? `ID: ${id}\n` : `ID: ${id}\nPage: ${page}\nSearch: ${tags.join(' ')}`})
+		.setAuthor({name: post.data.tags.artist.join(' ')});
+	
+	const row = new MessageActionRow()
+	if(interaction.customId === 'hidetags_search') {
+		row.addComponents(
+			new MessageButton()
+				.setCustomId('prev')
+				.setLabel('prev')
+				.setStyle('PRIMARY'),
+			new MessageButton()
+				.setCustomId('next')
+				.setLabel('next')
+				.setStyle('PRIMARY')
+		)
+	}
+	
+	row.addComponents(
+		new MessageButton()
+			.setCustomId('showtags')
+			.setLabel('Show Tags')
+			.setStyle('SECONDARY')
+	)
+
+	return msg.edit({embeds: [newEmbed], components: [row]});
+}
+
+async function handleShowTags(interaction) {
+	interaction.deferUpdate();
+
+	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
+
+	const msg = interaction.message;
+	const embed = msg.embeds[0];
+	const footer = embed.footer.text;
+
+	let type = '';
+	if(footer.split('\n').length === 1) {
+		type = 'post'; // Posts only have ID in footer
+	} else {
+		type = 'search'; // Searchs have ID, tags and page in footer
+	}
+
+	let id, page, searchtags;
+	if(type === 'search') {
+		[id, page, searchtags] = footer.split('\n');
+		id = parseInt(id.substring(4));
+		page = parseInt(page.substring(6));
+		searchtags = searchtags.substring(8).split(' ');
+	} else {
+		id = parseInt(footer.substring(4));
+	}
+
+	log.info(`show tags ${id}`);
+
+	const post = await e6.getpost(id);
+
+	if(post.status === 404) return msg.edit({content: 'That post has since been deleted'});
+
+	if(!post.ok) return msg.edit({content: 'A server error was encountered. Perhaps e621 is down?'});
+
+	const tags = post.data.tags;
+
+	const newEmbed = new MessageEmbed()
+		.setColor(e6.randcol())
+		.setTitle(`Tags for ${id}`)
+		.setURL(`https://e621.net/posts/${id}`)
+		.setImage(post.data.file.url ?? '')
+		.setFooter({text: (type === 'post') ? `ID: ${id}\n` : `ID: ${id}\nPage: ${page}\nSearch: ${searchtags.join(' ')}`})
+		.setAuthor({name: post.data.tags.artist.join(' ')})
+		.addFields(
+			{name: 'General', value: tags.general.join(', ') || '*None*', inline: true},
+			{name: 'Species', value: tags.species.join(', ') || '*None*', inline: true},
+			{name: 'Character', value: tags.character.join(', ') || '*None*', inline: true},
+			{name: 'Copyright', value: tags.copyright.join(', ') || '*None*', inline: true},
+			{name: 'Artist', value: tags.artist.join(', ') || '*None*', inline: true},
+			{name: 'Invalid', value: tags.invalid.join(', ') || '*None*', inline: true},
+			{name: 'Lore', value: tags.lore.join(', ') || '*None*', inline: true},
+			{name: 'Meta', value: tags.meta.join(', ') || '*None*', inline: true},
+		)
+	
+	const row = new MessageActionRow().addComponents(
+		new MessageButton()
+			.setCustomId((type === 'post') ? 'hidetags_post' : 'hidetags_search') // Searches will have to be handled differently to incolude prev,next buttons etc.
+			.setLabel('Hide Tags')
+			.setStyle('SECONDARY')
+	)
+	
+
+	console.log(post.data.tags)
+	return msg.edit({embeds: [newEmbed], components: [row]});
 }
 
 async function handleNextPrev(interaction) {
@@ -88,6 +221,10 @@ async function handleNextPrev(interaction) {
 			.setCustomId('next')
 			.setLabel('next')
 			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('showtags')
+			.setLabel('Show Tags')
+			.setStyle('SECONDARY')
 	);
 
 	const prevrow = new MessageActionRow().addComponents(
@@ -134,6 +271,7 @@ async function handleNextPrev(interaction) {
 			{name: 'Comments', value:String(post.comment_count), inline: true}
 		)
 		.setImage(post.file.url)
+		.setAuthor({name: post.tags.artist.join(' ')})
 		.setFooter({text: `ID: ${post.id}\nPage: ${page}\nSearch: ${tags.join(' ')}`});
 
 	interaction.deferUpdate();
@@ -141,6 +279,8 @@ async function handleNextPrev(interaction) {
 }
 
 async function handleShow(interaction) {
+	interaction.deferUpdate();
+
 	const e6 = new yiff(process.env.E6_USER, process.env.E6_KEY, `e621bot/1.0 (by ${process.env.E6_USER})`);
 
 	const msg = interaction.message;
@@ -174,7 +314,5 @@ async function handleShow(interaction) {
 			.setLabel('Hide')
 			.setStyle('SECONDARY'),
 	);
-
-	interaction.deferUpdate();
 	return msg.edit({embeds: [newEmbed], components: [row]});
 }

@@ -25,7 +25,7 @@ exports.run = async (client, message, args, level) => {
 
 	const embed = new MessageEmbed()
 		.setColor(e6.randcol())
-		.setTitle('eLink')
+		.setTitle('Link')
 		.setURL(`https://e621.net/posts/${post.id}`)
 		.setAuthor({name: post.tags.artist.join(' ')})
 		.setFooter({text: `ID: ${post.id}\nPage: 1\nSearch: ${args.join(' ')}`})
@@ -41,6 +41,10 @@ exports.run = async (client, message, args, level) => {
 			.setCustomId('next')
 			.setLabel('next')
 			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('showtags')
+			.setLabel('Show Tags')
+			.setStyle('SECONDARY')
 	);
 
 	return message.channel.send({'embeds': [embed], components: [row]});

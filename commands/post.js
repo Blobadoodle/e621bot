@@ -29,6 +29,13 @@ exports.run = async (client, message, args, level) => {
 		.setFooter({ text: `ID: ${post.data.id}\n`})
 		.setAuthor({name: post.data.tags.artist.join(' ')});
 
+	const row = new MessageActionRow().addComponents(
+		new MessageButton()
+			.setCustomId('showtags')
+			.setLabel('Show Tags')
+			.setStyle('SECONDARY')
+	)
+
 	const tags = [...post.data.tags.general, ...post.data.tags.species, ...post.data.tags.character, ...post.data.tags.copyright, ...post.data.tags.artist, ...post.data.tags.invalid, ...post.data.tags.lore, ...post.data.tags.meta ];
 
 	const settings = message.settings;
@@ -39,7 +46,7 @@ exports.run = async (client, message, args, level) => {
 
 	if(badtags.length === 0) {
 		embed.setImage(post.data.file.url ?? '');
-		return message.channel.send({'embeds': [embed]});
+		return message.channel.send({embeds: [embed], components: [row]});
 	} else {
 		embed.setDescription(`**This post contains the tags: \`${badtags.join(', ')}\` which are on your blacklist. Are you sure you want to view ths post?**`);
 		const row = new MessageActionRow().addComponents(
@@ -52,7 +59,7 @@ exports.run = async (client, message, args, level) => {
 				.setLabel('Cancel')
 				.setStyle('SECONDARY'),
 		);
-		return message.channel.send({'embeds': [embed], components: [row]});
+		return message.channel.send({embeds: [embed], components: [row]});
 	}
 }
 
