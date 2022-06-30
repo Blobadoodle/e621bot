@@ -32,15 +32,15 @@ process.on("unhandledRejection", err => {
 */
 function getSettings(guild) {
 	let guildConf = settings.get(guild.id);
-	if(guildConf != null && guildConf != undefined) {
 
+	if(guildConf != null && guildConf != undefined) {
 		return guildConf;
 	} else {
 		guildConf = config.defaultSettings;
 	}
 	let csettings = {};
 
-	for(const i in guildConf) {
+	for(const i of guildConf) {
 		csettings[i.name] = i.value;
 	}
 

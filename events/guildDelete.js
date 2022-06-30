@@ -1,5 +1,5 @@
 const log = require('../log.js');
-const settings = require("../modules/settings");
+const { settings } = require("../modules/settings");
 
 module.exports = (client, guild) => {
 	if (!guild.available) return; // If there is an outage, return
