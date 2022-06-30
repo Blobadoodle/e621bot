@@ -23,10 +23,15 @@ exports.run = async (client, message, args, level) => {
 
 	if(!posts.ok) return message.channel.send('A server errror was encountered. Perhaps e621 is down?');
 
+	let uriTags = [];
+	for(const tag of args) {
+		uriTags.push(encodeURIComponent(tag));
+	}
+
 	const embed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
-		.setURL(`https://e621.net/posts/${post.id}`)
+		.setURL(`https://e621.net/posts/${post.id}?q=${uriTags.join('+')}`)
 		.setAuthor({name: post.tags.artist.join(' ')})
 		.setFooter({text: `ID: ${post.id}\nPage: 1\nSearch: ${args.join(' ')}`})
 		.addFields(
