@@ -17,6 +17,11 @@ exports.run = async (client, message, args, level) => {
 
 	if (!post.ok) return message.channel.send('A server error was encountered. Perhaps e621 is down?');
 
+	let description = post.data.description;
+	if(description.length > 150) {
+		description = description.substring(0, 149) + '...';
+	}
+
 	const embed =  new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
@@ -28,6 +33,7 @@ exports.run = async (client, message, args, level) => {
 		)
 		.setFooter({ text: `ID: ${post.data.id}\n`})
 		.setTimestamp(new Date(post.data.created_at))
+		.setDescription(description)
 		.setAuthor({name: post.data.tags.artist.join(' ')});
 
 	const row = new MessageActionRow().addComponents(

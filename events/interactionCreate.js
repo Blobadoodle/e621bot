@@ -123,6 +123,11 @@ async function handleHideTags(interaction) {
 
 	if(!post.ok) return msg.edit({content: 'A server error was encountered perhaps e621 is down?'});
 
+	let description = post.data.description;
+	if(description.length > 150) {
+		description = description.substring(0, 149) + '...';
+	}
+
 	const newEmbed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
@@ -135,6 +140,7 @@ async function handleHideTags(interaction) {
 		.setImage(post.data.file.url ?? '')
 		.setFooter({text: (interaction.customId === 'hidetags_post') ? `ID: ${id}\n` : `ID: ${id}\nPage: ${page}\nSearch: ${tags.join(' ')}`})
 		.setAuthor({name: post.data.tags.artist.join(' ')})
+		.setDescription(description)
 		.setTimestamp(new Date(post.data.created_at));
 	
 	const row = new MessageActionRow()
@@ -293,10 +299,20 @@ async function handleNextPrev(interaction) {
 
 	if(!posts.ok) return msg.edit('A server error was encountered. Perhaps e621 is down?');
 
+	let uriTags = [];
+	for(const tag of args) {
+		uriTags.push(encodeURIComponent(tag));
+	}
+
+	let description = post.data.description;
+	if(description.length > 150) {
+		description = description.substring(0, 149) + '...';
+	}
+
 	const NewEmbed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
-		.setURL(`https://e621.net/posts/${post.id}`)
+		.setURL(`https://e621.net/posts/${post.id}?q=${uriTags.join('+')}`)
 		.addFields(
 			{name: 'Score', value: String(post.score.total), inline: true},
 			{name: 'Favourites', value: String(post.fav_count), inline: true},
@@ -304,6 +320,7 @@ async function handleNextPrev(interaction) {
 		)
 		.setImage(post.file.url)
 		.setAuthor({name: post.tags.artist.join(' ')})
+		.setDescription(description)
 		.setFooter({text: `ID: ${post.id}\nPage: ${page}\nSearch: ${tags.join(' ')}`});
 
 	interaction.deferUpdate();
@@ -327,6 +344,11 @@ async function handleShow(interaction) {
 
 	if (!post.ok) return msg.edit({content: 'A server error was encountered. Perhaps e621 is down?'});
 
+	let description = post.data.description;
+	if(description.length > 150) {
+		description = description.substring(0, 149) + '...';
+	}
+
 	const newEmbed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
@@ -339,6 +361,7 @@ async function handleShow(interaction) {
 		.setImage(post.data.file.url ?? '')
 		.setFooter({text: `ID: ${post.data.id}`})
 		.setAuthor({name: post.data.tags.artist.join(' ')})
+		.setDescription(description)
 		.setTimestamp(new Date(post.data.created_at));
 
 	const row = new MessageActionRow().addComponents(

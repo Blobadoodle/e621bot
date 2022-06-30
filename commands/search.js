@@ -28,6 +28,11 @@ exports.run = async (client, message, args, level) => {
 		uriTags.push(encodeURIComponent(tag));
 	}
 
+	let description = post.description;
+	if(description.length > 150) {
+		description = description.substring(0, 149) + '...';
+	}
+
 	const embed = new MessageEmbed()
 		.setColor(e6.randcol())
 		.setTitle('Link')
@@ -40,6 +45,7 @@ exports.run = async (client, message, args, level) => {
 			{name: 'Comments', value: String(post.comment_count), inline: true}
 		)
 		.setImage(post.file.url ?? '')
+		.setDescription(description)
 		.setTimestamp(new Date(post.created_at));
 
 	const row = new MessageActionRow().addComponents(
