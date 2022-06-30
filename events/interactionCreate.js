@@ -1,19 +1,66 @@
 const log = require('../log.js');
 const yiff = require('../modules/e6lib/yiff.js');
 const { settings } = require('../modules/settings');
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } = require('discord.js');
 const { getSettings, setSettings } = require('../modules/functions.js');
 const { pass } = require('../modules/passmsg.js');
 
 module.exports = async (client, interaction) => {
-
 	if(interaction.isButton()) return handleButton(interaction);
 	else if(interaction.isSelectMenu()) return handleSelect(interaction);
 	else return;
 };
 
-async function handleSelect(interaction) {
+function handleSelect(interaction) {
+	interaction.deferUpdate();
+	const id = interaction.customId;
+	if(id === 'setting') return handleSetting(interaction);
+	else if(id === 'modRole' || id === 'adminRole') return handleModRole(interaction);
+}
+
+function handleModRole(interaction) {
 	const value = interaction.values[0];
+
+	console.log(value);
+	if(!settings.has(interaction.message.guild.id)) setSettings(interaction.message.guild);
+
+	settings.set(interaction.message.guild.id, value, interaction.customId);
+	;console.log(interaction.message.guild.id, interaction.customId, value);
+	return interaction.message.edit({content: `Successfully set ${(interaction.customId === 'modRole') ? 'Mod' : 'Admin'} role to ${value}`, components: []});
+}
+
+function handleSetting(interaction) {
+	const value = interaction.values[0];
+
+	switch(value) {
+		case 'prefix':
+			interaction.message.edit({content: 'Please select the prefix for this server.', components: []});
+			break;
+		case 'modRole':
+		case 'adminRole':
+			let options = [];
+
+			interaction.guild.roles.cache.forEach((value, key) => {
+				options.push({label: value.name, value: value.name});
+			})
+
+			const row = new MessageActionRow().addComponents(
+				new MessageSelectMenu()
+					.setCustomId(value)
+					.setPlaceholder('Select the role to give permissions to.')
+					.setOptions(options)
+			)
+
+			return interaction.message.edit({content: `Please select the ${(value === 'modRole') ? 'Mod' : 'Admin'} role for this server.`, components: [row]})
+		case 'systemNotice':
+			interaction.message.edit({content: 'Please reply with yes or no to toggle replying to commands if the user does not have permission', components: []});
+			break;
+		case 'serverBlacklist':
+			const settings = getSettings(interaction.message.guild);
+			const blacklist = settings.serverBlacklist;
+			interaction.message.edit({content: `Please type the tag blacklist that will be applied to everyone across the server, seperated by commas.\nCurrent blacklist is: \`${blacklist.join(',')}\``, components: []});
+			break;
+	}
 
 	pass(interaction.message.author.id, interaction.message.channel.id, (client, message) => { 
 		let msg = message.content;
@@ -33,21 +80,6 @@ async function handleSelect(interaction) {
 		settings.set(message.guild.id, msg, value);
 		return interaction.message.edit(`Successfully changed setting to ${msg}`);
 	});
-	
-	switch(value) {
-		case 'prefix':
-			return interaction.message.edit({content: 'Please select the prefix for this server.', components: []});
-		case 'modRole':
-			return interaction.message.edit({content: 'Please type the moderator role for this server.', components: []});
-		case 'adminRole':
-			return interaction.message.edit({content: 'Please type the administrator role for this server.', components: []});
-		case 'systemNotice':
-			return interaction.message.edit({content: 'Please reply with yes or no to toggle replying to commands if the user does not have permission', components: []});
-		case 'serverBlacklist':
-			const settings = getSettings(interaction.message.guild);
-			const blacklist = settings.serverBlacklist;
-			return interaction.message.edit({content: `Please type the tag blacklist that will be applied to everyone across the server, seperated by commas.\nCurrent blacklist is: \`${blacklist.join(',')}\``, components: []});
-	}
 }
 
 function handleButton(interaction) {
@@ -190,9 +222,7 @@ async function handleShowTags(interaction) {
 			.setLabel('Hide Tags')
 			.setStyle('SECONDARY')
 	)
-	
 
-	console.log(post.data.tags)
 	return msg.edit({embeds: [newEmbed], components: [row]});
 }
 
