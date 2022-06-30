@@ -52,7 +52,7 @@ function setSettings(guild) {
 
 	let csettings = {};
 
-	for(const i in defaults) {
+	for(const i of defaults) {
 		csettings[i.name] = i.value;
 	}
 
